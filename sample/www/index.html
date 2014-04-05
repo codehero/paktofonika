@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+
+		<script type="text/javascript">
+			var theMsg = null;
+			function onBanner(msg){
+				theMsg = msg;
+			}
+
+			function onload(){
+				var elem = document.getElementById("banner");
+				elem.value = theMsg;
+			}
+		</script>
+
+		<script type="text/javascript" src="/jsonp/banner/onBanner">
+		</script>
+	</head>
+	<body onload="onload()">
+		<input type="text" id="banner" value="..." />
+	</body>
+</html>
