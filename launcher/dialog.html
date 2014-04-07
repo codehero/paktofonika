@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Controller</title>
+        <script src="./jquery-1.11.0.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                //wire up the buttons
+                $("#btnStop").prop('disabled', true);
+                $("#btnStop").click(ToggleServer);
+                $("#btnStart").prop('disabled', false);
+                $("#btnStart").click(ToggleServer);
+
+                //the toggler
+                function ToggleServer(e) {
+                    $("#action").val(this.value.toLowerCase());
+                    $("#btnStop").prop('disabled', (this.value.toLowerCase() == "stop"));
+                    $("#btnStart").prop('disabled', (this.value.toLowerCase() == "start"));
+                }
+            });
+
+        </script>
+    </head>
+    <body>
+        <div>
+            node.js Server contol panel 
+        </div>
+        <br/>
+        <div>
+            <input id="btnStart" type="Button" value="start">
+            <input id="btnStop" type="Button" value="stop">
+            <input id="action" type="hidden" name="action">
+        </div>
+    </body>
+</html>
