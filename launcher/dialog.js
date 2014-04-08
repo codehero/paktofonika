@@ -14,8 +14,8 @@ var paktofonika = new function () {
         var doc = fileSystem.GetFile("dialog.html");
 
         //setup the browser object
-        ie.Height = 200;
-        ie.Width = 320;
+        ie.Height = 310;
+        ie.Width = 400;
         ie.MenuBar = 0;
         ie.ToolBar = 0;
         ie.StatusBar = 0;
@@ -34,28 +34,33 @@ var paktofonika = new function () {
 
             var action = ie.Document.all.action.value;
             ie.Document.all.action.value = "";
-            toggleServer(action);
+            handleAction(action);
+
         } catch (ex) {
             //window has probably been closed
-            toggleServer('end');
-            WScript.Quit();
+            handleAction('stop');
+            handleAction('exit');
         }
 
     };
 
-    var toggleServer = function (action) {
+    var handleAction = function (action) {
         
         switch (action) {
+            case 'exit':
+
+                try { ie.Quit(); } catch (ex) {/*do nothing; chances are the window is already gone.*/ }
+                WScript.Quit();
+                break;
+
             case 'stop':
-            case 'end':
                 if (procId != 0) {
                     var wmiService = GetObject("winmgmts:\\\\.\\root\\cimv2");
                     var processes = wmiService.ExecQuery("Select * FROM Win32_Process Where ProcessId=" + procId);
-                    if (processes.Count == 1) 
+                    if (processes.Count == 1)
                         processes.ItemIndex(0).Terminate();
-                    procId = 0;   
+                    procId = 0;
                 }
-
                 break;
 
             case 'start':
@@ -77,7 +82,7 @@ var paktofonika = new function () {
                 break
         }
 
-        if (action != 'end')
+        if (action != 'exit')
             waitForInput();
     };
 }

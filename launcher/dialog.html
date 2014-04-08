@@ -2,35 +2,96 @@
     <head>
         <title>Controller</title>
         <script src="./jquery-1.11.0.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="dialog.css" media="screen" />
         <script type="text/javascript">
 
             $(document).ready(function () {
 
-                //wire up the buttons
+                //wire up the initial state of the screen
                 $("#btnStop").prop('disabled', true);
-                $("#btnStop").click(ToggleServer);
                 $("#btnStart").prop('disabled', false);
-                $("#btnStart").click(ToggleServer);
+                $("input[type=button]").click(handleAction);
 
-                //the toggler
-                function ToggleServer(e) {
-                    $("#action").val(this.value.toLowerCase());
-                    $("#btnStop").prop('disabled', (this.value.toLowerCase() == "stop"));
-                    $("#btnStart").prop('disabled', (this.value.toLowerCase() == "start"));
-                }
             });
 
+            //the action controller
+            function handleAction(e) {
+                var action = this.value.toLowerCase()
+                $("#action").val(action);
+
+                //page actions
+                switch (action) {
+                    case "stop":
+                    case "start":
+
+                        $("#btnStart").prop('disabled', (action == "start"));
+                        $("#btnStop").prop('disabled', (action == "stop"));
+                        break;
+
+                    case "configure":
+                        $("#caption").html("Configuration");
+                        $("#status").addClass("hidden");
+                        $("#configuration").removeClass("hidden");
+                        break;
+
+                    case "back":
+                        $("#caption").html("Server Status");
+                        $("#configuration").addClass("hidden");
+                        $("#status").removeClass("hidden");
+                        break;
+
+                    case "exit":
+
+                }
+
+            }
         </script>
     </head>
+
     <body>
         <div>
-            node.js Server contol panel 
-        </div>
-        <br/>
-        <div>
-            <input id="btnStart" type="Button" value="start">
-            <input id="btnStop" type="Button" value="stop">
-            <input id="action" type="hidden" name="action">
+            <h1 id="caption" class="center">Server Status</h1>
+            <input id="action" type="hidden" name="action" />
+
+            <!-- the status panel -->
+            <div id="status">
+                <input id="btnStart" type="button" class="button" value="start" />
+                <input id="btnStop" type="button" class="button" value="stop" />
+                <div id="status-commands">
+                    <div>
+                        <input id="btnExit" class="float-left button" type="button" value="exit" />
+                    </div>
+                    <div>
+                        <input id="btnConfigure" class="float-right button" type="button" value="configure" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- the configuration panel -->
+            <div id="configuration" class="hidden">
+                <div>
+                    <label>Select Instance</label><br/>
+                    <select id="instance" class="float-left input"></select>
+                    <input id="btnDeleteInstance" class="float-left button" type="button" value="delete" />
+                </div>
+
+                <div class="clear">
+                    <label>Add New Instance</label><br />
+                    <input id="instance-name" class="float-left input" type="text" />
+                    <input id="btnAddInstance" class="float-left button" type="button" value="add" />
+                    <input id="btnCloneInstance" class="float-left button" type="button" value="clone" />
+                </div>
+
+                <div class="clear">
+                    <label>Set Listen Port</label><br/>
+                    <input id="instance-port" class="float-left input" type="text" />
+                    <input id="btnSetPortInstance" class="float-left button input" type="button" value="set" />
+                </div>
+
+                <div class="clear">
+                    <input type="button" id="instance-save" class="float-right button" value="back" />
+                </div>
+            </div>
         </div>
     </body>
 </html>
