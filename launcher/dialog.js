@@ -3,6 +3,14 @@
 //Click the 'Start' button will pop a notepad window; click the stop button will close it.
 var paktofonika = paktofonika = paktofonika || {};
 
+if(WScript.Arguments.length < 2){
+	WScript.Echo("Must pass a GUI config and a APP config!");
+	WScript.Quit(1);
+}
+
+var GUI_FILE = WScript.Arguments(0);
+var CONFIG_FILE = WScript.Arguments(1);
+
 paktofonika.console = new function () {
 
     //IE Object Model: http://msdn.microsoft.com/en-us/library/aa752084(v=vs.85).aspx
@@ -10,7 +18,7 @@ paktofonika.console = new function () {
     var wshShell = new ActiveXObject("WScript.Shell");
     var procId = "";
 
-    var CONFIG_FILE = "dialog.json";
+    var guiConfig = {};
 
     //show the dialog and wait for a button click
     this.showDialog = function () {
@@ -18,11 +26,14 @@ paktofonika.console = new function () {
         var fileSystem = new ActiveXObject("Scripting.FileSystemObject");    
         var file = fileSystem.GetFile("dialog.html");
 
+	var guiFile = fileSystem.OpenTextFile(GUI_FILE, 1);
+	guiConfig = JSON.parse(guiFile.ReadAll());
+
         //setup the browser object
         ie.AddressBar = false;
         ie.Resizable = false;
-        ie.Height = 310;
-        ie.Width = 400;
+        ie.Height = guiConfig.ie.Height;
+        ie.Width = guiConfig.ie.Width;
         ie.MenuBar = false;
         ie.ToolBar = false;
         ie.StatusBar = false;
@@ -38,7 +49,7 @@ paktofonika.console = new function () {
         {
             //loop until we get an action from the browser
             while (ie.Document.all.action.value == "")
-                WScript.Sleep(250);
+                WScript.Sleep(guiConfig.sleepTime);
 
             var action = ie.Document.all.action.value;
             ie.Document.all.action.value = "";
@@ -84,7 +95,7 @@ paktofonika.console = new function () {
                 var wmiService = GetObject("winmgmts:\\\\.\\root\\cimv2:Win32_Process");
                 var method = wmiService.Methods_.Item("Create");
                 var inParams = method.InParameters.SpawnInstance_();
-                inParams.CommandLine = "notepad.exe";
+                inParams.CommandLine = guiConfig.process;
                 inParams.CurrentDirectory = null;
                 inParams.ProcessStartupInformation = null;
                 var outParams = wmiService.ExecMethod_(method.Name, inParams);

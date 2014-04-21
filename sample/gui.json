@@ -1,0 +1,9 @@
+{
+	"ie" : {
+		"Height" : 310
+		,"Width" : 400
+	}
+	,"sleepTime" : 250
+	,"process" : "node.exe"
+	,"startPort" : 7000
+}
